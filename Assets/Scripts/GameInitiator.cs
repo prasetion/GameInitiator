@@ -5,10 +5,8 @@ using Cysharp.Threading.Tasks;
 
 public class GameInitiator : MonoBehaviour
 {
-    // Queue untuk menyimpan semua inisialisasi
     private Queue<IInitialize> initializationQueue = new Queue<IInitialize>();
 
-    // Start is called before the first frame update
     void Start()
     {
         List<IInitialize> initializers = GetOrderedComponents<IInitialize>();
@@ -17,17 +15,14 @@ public class GameInitiator : MonoBehaviour
             AddInitializationStep(initializer);
         }
 
-        // Mulai proses inisialisasi
         StartInitialization().Forget();
     }
 
-    // Fungsi untuk menambahkan inisialisasi ke dalam queue
     public void AddInitializationStep(IInitialize step)
     {
         initializationQueue.Enqueue(step);
     }
 
-    // Memproses queue satu per satu menggunakan UniTask
     public async UniTask StartInitialization()
     {
         while (initializationQueue.Count > 0)
@@ -43,13 +38,11 @@ public class GameInitiator : MonoBehaviour
     {
         List<T> orderedComponents = new List<T>();
 
-        // Looping melalui setiap child dalam urutan transform
         for (int i = 0; i < transform.childCount; i++)
         {
             Transform child = transform.GetChild(i);
             T component = child.GetComponent<T>();
 
-            // Jika child memiliki komponen T, tambahkan ke list
             if (component != null)
             {
                 orderedComponents.Add(component);
